@@ -38,9 +38,21 @@ public class Menu {
             createButton(frame, "Exit", frame.getWidth(), 330, 130, 50)
         };
 
+        // Solo Button
         menuButtons[0].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 System.out.println("Solo");
+            }
+        });
+
+        // Exit Button
+        menuButtons[4].setColorOver(new Color(250, 160, 160));
+        menuButtons[4].setColorClick(new Color(190, 140,140));
+        menuButtons[4].setBorderColor(new Color(140, 40,40));
+        menuButtons[4].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.out.println("Exit");
+                System.exit(0);
             }
         });
 
@@ -55,7 +67,7 @@ public class Menu {
         return button;
     }
 
-    private void toggleFullscreen(JFrame frame) {
+    public void toggleFullscreen() {
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         if (device.getFullScreenWindow() == null) {
             // Enter fullscreen mode
@@ -80,7 +92,7 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean end = false;
-                deltaX += 0.003f;
+                deltaX += 0.01f;
                 for (Button component : buttons) {
                     Button button = (Button) component;
                     int newX = (int) (Math.pow(200 * (deltaX - 0.1),2)) - 40;
