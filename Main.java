@@ -19,7 +19,7 @@ public class Main {
         menu.initGUI();
 
         // Load user input
-        KeyBindings keyBindings = new KeyBindings("menu");
+        KeyBindings keyBindings = new KeyBindings(menu);
         frame.addKeyListener(keyBindings.getBindings());
     }
 }
