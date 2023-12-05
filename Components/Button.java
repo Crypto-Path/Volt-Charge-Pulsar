@@ -1,3 +1,4 @@
+package Components;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -159,7 +160,6 @@ public class Button extends JButton {
         //  Border set 2 Pix
         g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
 
-        
         Color textColor = new Color(127,127,127,200);
         g2.setColor(textColor);
         int x = (getWidth() - textWidth) / 2;
