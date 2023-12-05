@@ -101,9 +101,9 @@ public class Button extends JButton {
     public Button( String text ) {
         this.text = text;
         // Init Color
-        setColor(Color.WHITE);
-        setColorOver(new Color(179, 250, 160));
-        setColorClick(new Color(152, 184,144));
+        setColor(new Color(255, 255, 255, 200));
+        setColorOver(new Color(179, 250, 160, 0));
+        setColorClick(new Color(152, 184,144, 200));
         setBorderColor(new Color(30, 136,56));
         setContentAreaFilled(false);
         setBorderPainted(false);
@@ -160,7 +160,7 @@ public class Button extends JButton {
         g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
 
         
-        Color textColor = new Color(50,50,50);
+        Color textColor = new Color(127,127,127,200);
         g2.setColor(textColor);
         int x = (getWidth() - textWidth) / 2;
         int y = ((getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
