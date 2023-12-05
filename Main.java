@@ -1,36 +1,38 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Main {
 
     public static void main(String[] args) {
-        // Create a JFrame (window)
-        JFrame frame = new JFrame("Simple Window Example");
-        frame.setSize(400, 300); // Set the size of the window
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close the program when the window is closed
-
-        // Create a JPanel (container for components)
-        JPanel panel = new JPanel();
-
-        // Create a JLabel (text label)
-        JLabel label = new JLabel("Hello, Java Swing!");
-
-        // Add the label to the panel
-        panel.add(label);
-
-        // Add the panel to the frame
-        frame.add(panel);
-
-        // Center the window on the screen
-        frame.setLocationRelativeTo(null);
-
-        // Make the window visible
-        frame.setVisible(true);
+        Main app = new Main();
+        app.createAndShowGUI();
     }
 
-    private void addListeners(JFrame frame) {
-      frame.addKeyListener(new KeyListener() {
+    private void createAndShowGUI() {
+        // Create a JFrame (window)
+        JFrame frame = new JFrame("Volt Charge Pulsar");
+        frame.setSize(800, 600); // Set the size of the window
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close the program when the window is closed
+
+        frame.getContentPane().setBackground(Color.BLACK);
+
+        createButton(frame, "Solo", frame.getWidth(), 50, 130, 50);
+        createButton(frame, "Multi", frame.getWidth(), 120, 130, 50);
+        createButton(frame, "Editor", frame.getWidth(), 190, 130, 50);
+        createButton(frame, "Settings", frame.getWidth(), 260, 130, 50);
+        createButton(frame, "Exit", frame.getWidth(), 330, 130, 50);
+
+        frame.setLayout(null);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        animateButtons(frame);
+
+        frame.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
                 // Not needed for this example
@@ -38,10 +40,11 @@ public class Main {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                System.out.println("Key pressed: "+ e);
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_F11:
                         toggleFullscreen(frame);
-                    break;
+                        break;
                 }
             }
 
@@ -52,7 +55,15 @@ public class Main {
         });
     }
 
-    private static void toggleFullscreen(JFrame frame) {
+    private void createButton(JFrame frame, String text, int x, int y, int w,int h) {
+
+        Button button = new Button(text);
+        frame.add(button);
+        button.setLocation(x, y);
+        button.setSize(w, h);
+    }
+
+    private void toggleFullscreen(JFrame frame) {
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         if (device.getFullScreenWindow() == null) {
             // Enter fullscreen mode
@@ -65,9 +76,32 @@ public class Main {
             device.setFullScreenWindow(null);
             frame.dispose();
             frame.setUndecorated(false);
-            frame.setSize(400, 300); // Set the size to your preferred non-fullscreen size
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            createAndShowGUI(); // Reinitialize the frame
         }
+    }
+
+    private void animateButtons(JFrame frame) {
+        Timer timer = new Timer(20, new ActionListener() {
+            private int deltaX = -200; // adjust this value to control the speed of the animation
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Component component : frame.getContentPane().getComponents()) {
+                    if (component instanceof Button) {
+                        Button button = (Button) component;
+                        int newX = (int) (button.getX() / 1.1185f);
+                        deltaX += 1;
+                        if (deltaX > 0) {
+                            button.setLocation(52, button.getY());
+                            return;
+                        }
+                        if (newX > 50) { // adjust this value to control the endpoint of the animation
+                            button.setLocation(newX, button.getY());
+                        }
+                    }
+                }
+            }
+        });
+        timer.start();
     }
 }
