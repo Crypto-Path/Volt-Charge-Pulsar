@@ -20,17 +20,19 @@ public class Main {
 
         frame.getContentPane().setBackground(Color.BLACK);
 
-        createButton(frame, "Solo", frame.getWidth(), 50, 130, 50);
-        createButton(frame, "Multi", frame.getWidth(), 120, 130, 50);
-        createButton(frame, "Editor", frame.getWidth(), 190, 130, 50);
-        createButton(frame, "Settings", frame.getWidth(), 260, 130, 50);
-        createButton(frame, "Exit", frame.getWidth(), 330, 130, 50);
+        Button menuButtons[] = {
+            createButton(frame, "Solo", frame.getWidth(), 50, 130, 50),
+            createButton(frame, "Multi", frame.getWidth(), 120, 130, 50),
+            createButton(frame, "Editor", frame.getWidth(), 190, 130, 50),
+            createButton(frame, "Settings", frame.getWidth(), 260, 130, 50),
+            createButton(frame, "Exit", frame.getWidth(), 330, 130, 50)
+        };
 
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        animateButtons(frame);
+        animateButtons(frame, menuButtons);
 
         frame.addKeyListener(new KeyListener() {
             @Override
@@ -55,12 +57,12 @@ public class Main {
         });
     }
 
-    private void createButton(JFrame frame, String text, int x, int y, int w,int h) {
-
+    private Button createButton(JFrame frame, String text, int x, int y, int w,int h) {
         Button button = new Button(text);
         frame.add(button);
         button.setLocation(x, y);
         button.setSize(w, h);
+        return button;
     }
 
     private void toggleFullscreen(JFrame frame) {
@@ -75,32 +77,31 @@ public class Main {
             // Exit fullscreen mode
             device.setFullScreenWindow(null);
             frame.dispose();
-            frame.setUndecorated(false);
+            frame.setUndecorated(true);
             createAndShowGUI(); // Reinitialize the frame
         }
     }
 
-    private void animateButtons(JFrame frame) {
+    private void animateButtons(JFrame frame, Button buttons[]) {
         Timer timer = new Timer(20, new ActionListener() {
-            private int deltaX = -200; // adjust this value to control the speed of the animation
+            private float deltaX = 0f;
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Component component : frame.getContentPane().getComponents()) {
-                    if (component instanceof Button) {
-                        Button button = (Button) component;
-                        int newX = (int) (button.getX() / 1.1185f);
-                        deltaX += 1;
-                        if (deltaX > 0) {
-                            button.setLocation(52, button.getY());
-                            return;
-                        }
-                        if (newX > 50) { // adjust this value to control the endpoint of the animation
-                            button.setLocation(newX, button.getY());
-                        }
+                boolean end = false;
+                for (Button component : buttons) {
+                    Button button = (Button) component;
+                    deltaX += 0.001f;
+                    int newX = (int) (Math.pow(200 * (deltaX - 0.1),2)) - 52;
+                    button.setLocation(-newX, button.getY());
+                    if (deltaX > 0.125f) {
+                        button.setLocation(30, button.getY());
+                        end = true;
                     }
+                    System.out.println(deltaX);
                 }
             }
+            
         });
         timer.start();
     }
