@@ -102,6 +102,10 @@ public class Button extends JButton {
         this.radius = radius;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public Button( String text ) {
         this.text = text;
         // Init Color
@@ -190,6 +194,7 @@ public class Button extends JButton {
                 frame.setSize(400, 200);
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
+                
             }
         });
     }
