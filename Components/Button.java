@@ -1,4 +1,5 @@
 package Components;
+import java.awt.Cursor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -11,6 +12,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+
 
 public class Button extends JButton {
 
@@ -102,10 +105,10 @@ public class Button extends JButton {
     public Button( String text ) {
         this.text = text;
         // Init Color
-        setColor(new Color(255, 255, 255, 200));
-        setColorOver(new Color(179, 250, 160, 0));
-        setColorClick(new Color(152, 184,144, 200));
-        setBorderColor(new Color(30, 136,56));
+        setColor(new Color(255, 255, 255));
+        setColorOver(new Color(160, 250, 160));
+        setColorClick(new Color(140, 190,140));
+        setBorderColor(new Color(40, 140,40));
         setContentAreaFilled(false);
         setBorderPainted(false);
         // Add event mouse
@@ -113,12 +116,14 @@ public class Button extends JButton {
             @Override
             public void mouseEntered(MouseEvent e) {
                 setBackground(colorOver);
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
                 over = true;
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
                 setBackground(color);
+                setCursor(Cursor.getDefaultCursor());
                 over = false;
             }
 
@@ -145,7 +150,7 @@ public class Button extends JButton {
     private Color colorOver;
     private Color colorClick;
     private Color borderColor;
-    private int radius = 50;
+    private int radius;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -160,7 +165,7 @@ public class Button extends JButton {
         //  Border set 2 Pix
         g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
 
-        Color textColor = new Color(127,127,127,200);
+        Color textColor = new Color(20, 20, 20);
         g2.setColor(textColor);
         int x = (getWidth() - textWidth) / 2;
         int y = ((getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
