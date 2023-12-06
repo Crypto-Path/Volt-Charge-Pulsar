@@ -150,7 +150,7 @@ public class Button extends JButton {
     private Color colorOver;
     private Color colorClick;
     private Color borderColor;
-    private int radius = 50;
+    private int radius;
 
     @Override
     protected void paintComponent(Graphics g) {
