@@ -31,12 +31,16 @@ public class Menu {
 
     public void initGUI() {
         Button menuButtons[] = {
-            createButton(frame, "Solo", frame.getWidth(), 50, 130, 50),
-            createButton(frame, "Multi", frame.getWidth(), 120, 130, 50),
-            createButton(frame, "Editor", frame.getWidth(), 190, 130, 50),
-            createButton(frame, "Settings", frame.getWidth(), 260, 130, 50),
-            createButton(frame, "Exit", frame.getWidth(), 330, 130, 50)
+            createButton(frame, "Solo", frame.getWidth(), 5, 150, 30),
+            createButton(frame, "Multi", frame.getWidth(), 4, 150, 30),
+            createButton(frame, "Editor", frame.getWidth(), 3, 150, 30),
+            createButton(frame, "Settings", frame.getWidth(), 2, 150, 30),
+            createButton(frame, "Exit", frame.getWidth(), 1, 150, 30)
         };
+
+        for (Button button : menuButtons) {
+            button.setLocation(button.location().x, frame.getHeight() - (button.location().y * 50 + 50));
+        }
 
         // Solo Button
         menuButtons[0].addActionListener(new ActionListener() {
@@ -59,11 +63,12 @@ public class Menu {
         animateButtons(frame, menuButtons);
     }
 
-    private Button createButton(JFrame frame, String text, int x, int y, int w,int h) {
+    private Button createButton(JFrame frame, String text, int x, int y, int w, int h) {
         Button button = new Button(text);
         frame.add(button);
         button.setLocation(x, y);
         button.setSize(w, h);
+        button.setRadius(h);
         return button;
     }
 
