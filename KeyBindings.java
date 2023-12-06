@@ -36,10 +36,66 @@ public class KeyBindings {
                     break;
             }
             System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
-        }
 
+
+
+        }
+        
         @Override
         public void keyReleased(KeyEvent e) {
         }
+
+        
+    };
+
+    private KeyListener gameBindings = new KeyListener() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    menu.toggleFullscreen();
+                    break;
+                case KeyEvent.VK_A: 
+                    menu.toggleFullscreen(); 
+                    break; 
+                case KeyEvent.VK_S: 
+                    menu.toggleFullscreen();
+                     break; 
+                case KeyEvent.VK_D:
+                    menu.toggleFullscreen(); 
+                     break; 
+                case KeyEvent.VK_UP:
+                    menu.toggleFullscreen(); 
+                    break; 
+                case KeyEvent.VK_DOWN:
+                    menu.toggleFullscreen(); 
+                    break; 
+                case KeyEvent.VK_LEFT:
+                    menu.toggleFullscreen(); 
+                    break; 
+               case KeyEvent.VK_RIGHT:
+                    menu.toggleFullscreen(); 
+                    break; 
+                
+
+                
+            
+                default:
+                    break;
+            }
+            System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
+
+
+            
+        }
+        
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+        
     };
 }
