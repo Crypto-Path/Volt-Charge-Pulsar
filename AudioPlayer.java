@@ -1,6 +1,6 @@
-import java.io.*;
-import java.net.URL;
 import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.*;
 
 import java.awt.event.ActionEvent;
@@ -17,7 +17,7 @@ import java.awt.Graphics2D;
 public class AudioPlayer extends JButton {
 
     private Clip clip;
-    private URL url;
+    private String audioFilePath;
     private AudioInputStream audioIn;
 
     private boolean isShown;
@@ -63,20 +63,37 @@ public class AudioPlayer extends JButton {
           }
         });
       }
+
+      
+
+        File audioFile = new File(audioFilePath);
+
+        try {
+            // Set up the audio input stream
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+
+            // Get a Clip from the AudioSystem
+            Clip clip = AudioSystem.getClip();
+
+            // Open the audio input stream with the clip
+            clip.open(audioInputStream);
+
+            // Start playing the audio
+            clip.start();
+
+            // Wait for the audio to finish playing
+            clip.drain();
+
+            // Close the clip and the audio input stream
+            clip.close();
+            audioInputStream.close();
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
    }
 
    public void setAudio(String path) {
-      try {
-        url = this.getClass().getClassLoader().getResource("audio.wav");
-        audioIn = AudioSystem.getAudioInputStream(url);
-        clip.open(audioIn);
-      } catch (UnsupportedAudioFileException e) {
-         e.printStackTrace();
-      } catch (IOException e) {
-         e.printStackTrace();
-      } catch (LineUnavailableException e) {
-         e.printStackTrace();
-      }
+    audioFilePath = path;
    }
 
    public void play() {
