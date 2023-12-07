@@ -182,7 +182,7 @@ public class Button extends JButton {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new JFrame("Cool Button");
+                JFrame frame = new JFrame("Button");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
                 Button button = new Button("Sample Text");
