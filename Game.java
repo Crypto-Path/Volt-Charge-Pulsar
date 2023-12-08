@@ -11,25 +11,31 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
-public class RendererAndMusic {
+public class Game {
+  private JFrame frame;
 
-  static JFrame frame = new JFrame("Volt Charge Pulsar");
+  private AudioPlayer audioPlayer;
+  private NoteRenderer noteRenderer;
+  private Timer timer;
 
-  public static void main(String[] args) {
-    // Needed for user input
-    JPanel panel = new JPanel();
-    frame.add(panel);
+  public Game(JFrame frame) {
+    this.frame = frame;
+  }
 
+  public void InitMenu() {
     System.out.println("Initiating Frame");
     JFrame frame = new JFrame("Note renderer");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setSize(800, 600);
     frame.setLocationRelativeTo(null);
     frame.setLayout(null);
-System.out.println("Finalizing Frame");
+    frame.getContentPane().setBackground(Color.WHITE);
+    System.out.println("Finalizing Frame");
+  }
 
+  public void initGUI() {
     System.out.println("Initiating Audio Player");
-    AudioPlayer audioPlayer = new AudioPlayer(frame, 300, 50, true);
+    audioPlayer = new AudioPlayer(frame, 300, 50, true);
     try {
       audioPlayer.setAudio("audio.wav");
     } catch (IOException e) {
@@ -43,10 +49,10 @@ System.out.println("Finalizing Frame");
       e.printStackTrace();
     }
     frame.add(audioPlayer);
-    audioPlayer.setBounds(audioPlayer.getX(), audioPlayer.getY(), audioPlayer.getWidth(), audioPlayer.getHeight());
+    audioPlayer.setBounds(audioPlayer.getX(), audioPlayer.getY(), audioPlayer.getW(), audioPlayer.getH());
     
     System.out.println("Initiating Renderer");
-    NoteRenderer noteRenderer = new NoteRenderer(frame, new int[][][] {
+    noteRenderer = new NoteRenderer(frame, new int[][][] {
         /* Lane 1 Up */ { { 0, 5 }, { 16, 5 } },
         /* Lane 2 Down */ { { 19, 2} },
         /* Lane 3 Left */ { { 8, 9 }, { 18, 2} },
@@ -60,14 +66,29 @@ System.out.println("Finalizing Frame");
     frame.setVisible(true);
 
     // Emulates audio progress playing
-    Timer timer = new Timer(20, new ActionListener() {
+    timer = new Timer(20, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
           noteRenderer.setBounds(0, 0, frame.getWidth(), frame.getHeight());
           noteRenderer.setSongPosition((float) (audioPlayer.getProgress() / (60000000 / (96.5 * 2)) + 1));
+          
+          audioPlayer.setX(frame.getWidth() - (audioPlayer.getW() + 20));
+          audioPlayer.setY(frame.getHeight() - (audioPlayer.getH() + 45));
           frame.repaint();
       }
-  }); 
-  timer.start();
+    }); 
+    timer.start();
+  }
+
+  public void unload() {
+    timer.stop();
+    timer = null;
+    frame.remove(audioPlayer.playButton);
+    audioPlayer.playButton = null;
+    frame.remove(audioPlayer);
+    audioPlayer = null;
+
+    frame.remove(noteRenderer);
+    noteRenderer = null;
   }
 }
