@@ -42,6 +42,7 @@ public class NoteRenderer extends JButton {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        g2.setColor(Color.BLUE);
         for (int laneIndex = 0; laneIndex < notes.length; laneIndex++) {
             int[][] lane = notes[laneIndex];
             for (int noteIndex = 0; noteIndex < lane.length; noteIndex++) {
@@ -52,64 +53,83 @@ public class NoteRenderer extends JButton {
             }
         }
 
+        Color hitters = new Color(255, 0, 0, 127);
+        g2.setColor(hitters);
+
+        int size = Math.min(frame.getHeight(), frame.getWidth()) / 15;
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 - size - 20, size, size, size / 3, size / 3);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 - size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 + size - 20, size, size, size / 3, size / 3);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 + size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3);
+
         super.paintComponent(g);
     }
 
     private void DrawNote(Graphics2D g2, float position, int length, int direction) {
-        int scrollSpeed = 10;
+        int size = Math.min(frame.getHeight(), frame.getWidth()) / 15;
+        int scrollSpeed = size;
 
-        int sizeX = 30;
-        int sizeY = 30;
+        int sizeX = size;
+        int sizeY = size;
         int sizeOffsetX = sizeX/2;
-        int sizeOffsetY = sizeY/2;
+        int sizeOffsetY = sizeY/2 + 20;
 
         int x = 0;
         int y = 0;
 
         int drawPosition = (int)((position - songPosition) * scrollSpeed);
-        if (drawPosition < -30 * length) return;
+        if (drawPosition < -size * length) return;
         int centerPositionX = frame.getWidth() / 2 - sizeOffsetX;
         int centerPositionY = frame.getHeight() / 2 - sizeOffsetY;
 
         switch (direction) {
             case 0: // Up
                 x = centerPositionX;
-                y = centerPositionY - drawPosition - 30;
+                y = centerPositionY - drawPosition - size;
                 sizeY *= length;
-                if (drawPosition < 30 * (length - 1) && length > 1) sizeY += drawPosition - 30 * (length - 1);
+                y -= size * length;
+                sizeY += Math.min(0, ((position + 1) - songPosition) * size);
                 break;
             case 1: // Down
-                x = centerPositionX;
-                y = centerPositionY + drawPosition - 30 * (length - 2);
+                x = centerPositionX + size;
+                y = centerPositionY + drawPosition + size * (length + 2);
                 sizeY *= length;
-                drawPosition -= 30 * (length - 1);
-                if (drawPosition < 0 && length > 1) {
-                    sizeY += drawPosition;
-                    y -= drawPosition;
-                }
+                sizeY += Math.min(0, ((position + 1) - songPosition) * size);
                 break;
             case 2: // Left
-                x = centerPositionX - drawPosition - 30;
+                x = centerPositionX - drawPosition - size;
                 y = centerPositionY;
                 sizeX *= length;
-                if (drawPosition < 30 * (length - 1) && length > 1) sizeX += drawPosition - 30 * (length - 1);
+                x -= size * length;
+                sizeX += Math.min(0, ((position + 1) - songPosition) * size);
                 break;
             case 3: // Right
-                x = centerPositionX + drawPosition - 30 * (length - 2);
-                y = centerPositionY;
+                x = centerPositionX + drawPosition + size * (length + 2);
+                y = centerPositionY + size;
                 sizeX *= length;
-                drawPosition -= 30 * (length - 1);
-                if (drawPosition < 0 && length > 1) {
-                    sizeX += drawPosition;
-                    x -= drawPosition;
-                }
+                sizeX += Math.min(0, ((position + 1) - songPosition) * size);
                 break;
         
             default:
                 break;
         }
+        if (direction == 1 || direction == 3) {
+            fillRoundRectBR(g2, x, y, sizeX, sizeY, size / 3, size / 3);
+            return;
+        }
+        g2.fillRoundRect(x, y, sizeX, sizeY, size / 3, size / 3);
+    }
 
-        g2.fillRoundRect(x, y, sizeX, sizeY, 10, 10);
+    private void fillRoundRectBR(Graphics g, int x, int y, int width, int height, int arcWidth, int arcHeight) {
+        // Adjust the coordinates to draw from the bottom right
+        int adjustedX = x - width;
+        int adjustedY = y - height;
+
+        g.fillRoundRect(adjustedX, adjustedY, width, height, arcWidth, arcHeight);
+    }
+
+    public static void setSongPosition(float songPosition) {
+      NoteRenderer.songPosition = songPosition;
     }
 
     public static void main(String[] args) {
@@ -126,10 +146,10 @@ public class NoteRenderer extends JButton {
 
                 System.out.println("Initiating Renderer");
                 NoteRenderer noteRenderer = new NoteRenderer(frame, new int[][][] {
-                    /* Lane 3 */ {{14, 1}, {15, 1}, {20, 2}, {24, 2}},
-                    /* Lane 1 */ {{20, 2}},
-                    /* Lane 2 */ {{20, 2}},
-                    /* Lane 4 */ {{20, 2}}
+                    /* Lane 1 Up */ {{5, 2}},
+                    /* Lane 2 Down */ {{5, 2}},
+                    /* Lane 3 Left */ {{5, 3}},
+                    /* Lane 4 Right */ {{5, 3}}
                 });
                 frame.add(noteRenderer);
                 noteRenderer.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -141,7 +161,8 @@ public class NoteRenderer extends JButton {
                 Timer timer = new Timer(20, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        songPosition += 0.16;
+                        noteRenderer.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+                        songPosition += 0.05;
                         frame.repaint();
                     }
                 }); 
