@@ -11,142 +11,195 @@ import java.awt.event.KeyListener;
 import Components.Button;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import
+
+javax.sound.sampled.LineUnavailableException;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import java.io.File;
+import java.io.IOException;
+
 public class AudioPlayer extends JButton {
 
-    private Clip clip;
-    private String audioFilePath;
-    private AudioInputStream audioIn;
+  private Clip clip;
 
-    private boolean isShown;
+  private boolean isShown;
 
-    private Components.Button playButton;
+  private Components.Button playButton;
 
-    private JFrame frame;
+  private JFrame frame;
 
-    private int x;
-    private int y;
-    private int w;
-    private int h;
+  private int x;
+  private int y;
+  private int w;
+  private int h;
 
-    private boolean audioPlaying = false;
+  private boolean audioPlaying = false;
 
-   public AudioPlayer(JFrame frame, int w, int h, boolean isShown) {
-      this.x = frame.getWidth() - (w + 20);
-      this.y = frame.getHeight() - (h + 45);
-      this.w = w;
-      this.h = h;
-      this.isShown = isShown;
+  public AudioPlayer(JFrame frame, int w, int h, boolean isShown) {
+    System.out.println("Initiating Audio: Display data");
+    this.x = frame.getWidth() - (w + 20);
+    this.y = frame.getHeight() - (h + 45);
+    this.w = w;
+    this.h = h;
+    this.isShown = isShown;
 
-      setContentAreaFilled(false);
-      setBorderPainted(false);
-      if (isShown) {
-        playButton = new Components.Button("   ▶︎");
-        playButton.setRadius(this.h - 20);
-        frame.add(playButton);
-        playButton.setLocation(x + 10, y + 10);
-        playButton.setSize(this.h - 20, this.h - 20);
+    setContentAreaFilled(false);
+    setBorderPainted(false);
+    if (isShown) {
+      System.out.println("Initiating Audio: Play button");
+      playButton = new Components.Button("   ▶︎");
+      playButton.setRadius(this.h - 20);
+      frame.add(playButton);
+      playButton.setLocation(x + 10, y + 10);
+      playButton.setSize(this.h - 20, this.h - 20);
 
-        playButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent arg0) {
-              if (audioPlaying) {
-                playButton.setText("   ▶︎");
-                audioPlaying = false;
-                pause();
-                return;
-              }
-              playButton.setText("❚❚");
-              audioPlaying = true;
-              play();
+      System.out.println("Initiating Audio: Button listener");
+      playButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent arg0) {
+          if (audioPlaying) {
+            playButton.setText("   ▶︎");
+            audioPlaying = false;
+            pause();
+            return;
           }
-        });
-      }
-
-      
-
-        File audioFile = new File(audioFilePath);
-
-        try {
-            // Set up the audio input stream
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-
-            // Get a Clip from the AudioSystem
-            Clip clip = AudioSystem.getClip();
-
-            // Open the audio input stream with the clip
-            clip.open(audioInputStream);
-
-            // Start playing the audio
-            clip.start();
-
-            // Wait for the audio to finish playing
-            clip.drain();
-
-            // Close the clip and the audio input stream
-            clip.close();
-            audioInputStream.close();
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-            e.printStackTrace();
+          playButton.setText("❚❚");
+          audioPlaying = true;
+          play();
         }
-   }
+      });
+    }
+  }
 
-   public void setAudio(String path) {
-    audioFilePath = path;
-   }
+  public void setAudio(String filePath) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
+    System.out.println("Audio: Set audio file");
+    File audioFile = new File(filePath);
+    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
 
-   public void play() {
-      clip.start();
-   }
+    clip = AudioSystem.getClip();
+    clip.open(audioInputStream);
+    // clip.setLoopPoints(PreviewPoint, -1);
+  }
 
-   public void pause() {
-      clip.stop();
-   }
-
-   public float getProgress() {
-    return clip.getMicrosecondPosition();
-   }
-
-   public float getLength() {
-    return clip.getMicrosecondLength();
-   }
-
-   // Draw player
-   /*
-    * Play/Pause Button
-    * Draggable progress bar
-    * Progress in seconds and total time of song
-    */
-    
+  Timer timer = new Timer(33, new ActionListener() {
     @Override
-    protected void paintComponent(Graphics g) {
-      if (isShown) {
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(127, 127, 127));
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), this.h, this.h);
-
-        super.paintComponent(g);
+    public void actionPerformed(ActionEvent e) {
+      repaint();
+      if (clip.getMicrosecondPosition() == clip.getMicrosecondLength()) {
+        stop();
       }
     }
+  });
 
-   public static void main(String[] args) {
-      SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new JFrame("Cool Button");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  public void play() {
+    System.out.println("Audio: Playing audio");
+    clip.start();
+    timer.start();
+  }
 
-                frame.setSize(400, 200);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+  public void pause() {
+    System.out.println("Audio: Pausing audio");
+    clip.stop();
+    timer.stop();
+  }
 
-                AudioPlayer audioPlayer = new AudioPlayer(frame, 300, 50, true);
-                audioPlayer.setAudio("audio.wav");
-                frame.add(audioPlayer);
-                frame.setLayout(null);
-                audioPlayer.setBounds(audioPlayer.x, audioPlayer.y, audioPlayer.w, audioPlayer.h);
-            }
-        });
-   }
+  public void stop() {
+    System.out.println("Audio: Ending audio");
+    if (clip != null) {
+      clip.stop();
+      clip.close();
+      timer.stop();
+    }
+  }
+
+  public float getProgress() {
+    return clip.getMicrosecondPosition();
+  }
+
+  public float getLength() {
+    return clip.getMicrosecondLength();
+  }
+
+  public boolean isPlaying() {
+    return clip != null && clip.isActive();
+  }
+
+  // Draw player
+  /*
+   * Play/Pause Button
+   * Draggable progress bar
+   * Progress in seconds and total time of song
+   */
+
+  @Override
+  protected void paintComponent(Graphics g) {
+    if (isShown) {
+      int s = (int) (clip.getMicrosecondPosition() / (1000000) % 60);
+      int sL = (int) (clip.getMicrosecondLength() / (1000000) % 60);
+      String timeText = (clip.getMicrosecondPosition() / (1000000 * 60) + ":" + ((s < 10) ? "0" : "") + s + "/"
+          + (clip.getMicrosecondLength() / (1000000 * 60) + ":" + ((sL < 10) ? "0" : "") + sL));
+      FontMetrics metrics = g.getFontMetrics();
+      int textWidth = metrics.stringWidth(timeText);
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setColor(new Color(127, 127, 127));
+      g2.fillRoundRect(0, 0, getWidth(), getHeight(), this.h, this.h);
+
+      int barHeight = 8;
+      g2.setColor(new Color(100, 100, 120));
+      g2.fillRoundRect(this.h, this.h / 2 - barHeight / 2, (int) (w - 2 * this.h), barHeight, barHeight, barHeight);
+
+      g2.setColor(new Color(75, 100, 160));
+      g2.fillRoundRect(this.h, this.h / 2 - barHeight / 2,
+          (int) (clip.getMicrosecondPosition() * 1.0 / clip.getMicrosecondLength() * (w - 2 * this.h)), barHeight,
+          barHeight, barHeight);
+
+      g2.drawString(timeText, this.w - this.h / 2 - metrics.stringWidth(timeText) / 2,
+          this.h / 2 + metrics.getHeight() / 4);
+
+      System.out.println(clip.getMicrosecondPosition() * 1.0 / clip.getMicrosecondLength());
+
+      super.paintComponent(g);
+    }
+  }
+
+  public static void main(String[] args) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        System.out.println("Initiating Frame");
+        JFrame frame = new JFrame("AudioPlayer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        System.out.println("Finalizing Frame");
+
+        System.out.println("Initiating Audio Player");
+        AudioPlayer audioPlayer = new AudioPlayer(frame, 300, 50, true);
+        try {
+          audioPlayer.setAudio("audio.wav");
+        } catch (IOException e) {
+          System.out.println("Error - AudioPlayer.java: General error. lol code bad.");
+          e.printStackTrace();
+        } catch (LineUnavailableException e) {
+          System.out.println("Error - AudioPlayer.java: Line Unavailable");
+          e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+          System.out.println("Error - AudioPlayer.java: Audio file extension unavailable; Extension supported: .wav");
+          e.printStackTrace();
+        }
+        frame.add(audioPlayer);
+        frame.setLayout(null);
+        audioPlayer.setBounds(audioPlayer.x, audioPlayer.y, audioPlayer.w, audioPlayer.h);
+      }
+    });
+  }
 }
