@@ -18,7 +18,7 @@ public class Game {
   private NoteRenderer noteRenderer;
   private Timer timer;
 
-  public Game(JFrame frame) {
+  public Game(JFrame frame, int level, int difficulty) {
     this.frame = frame;
   }
 
@@ -70,7 +70,7 @@ public class Game {
       @Override
       public void actionPerformed(ActionEvent e) {
           noteRenderer.setBounds(0, 0, frame.getWidth(), frame.getHeight());
-          noteRenderer.setSongPosition((float) (audioPlayer.getProgress() / (60000000 / (96.5 * 2)) + 1));
+          noteRenderer.setSongPosition((float) (audioPlayer.getProgress() / (60 * 1000000 / (96.5 * 2)) + 1));
           
           audioPlayer.setX(frame.getWidth() - (audioPlayer.getW() + 20));
           audioPlayer.setY(frame.getHeight() - (audioPlayer.getH() + 45));
