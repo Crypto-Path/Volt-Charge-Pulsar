@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.util.*;
+
 public class Main {
     static JFrame frame = new JFrame("Volt Charge Pulsar");
 
@@ -13,13 +15,9 @@ public class Main {
         JPanel panel = new JPanel();
         frame.add(panel);
 
-        // Load main menu
-        Menu menu = new Menu(frame);
-        menu.initMenu();
-        menu.initGUI();
+        SceneManager sceneManager = new SceneManager(frame);
+        sceneManager.LoadMenu();
 
-        // Load user input
-        KeyBindings keyBindings = new KeyBindings(menu);
-        frame.addKeyListener(keyBindings.getBindings());
+        frame.repaint();
     }
 }
