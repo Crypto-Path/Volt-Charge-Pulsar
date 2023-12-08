@@ -36,16 +36,11 @@ public class KeyBindings {
                     break;
             }
             System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
-
-
-
         }
         
         @Override
         public void keyReleased(KeyEvent e) {
         }
-
-        
     };
 
     private KeyListener gameBindings = new KeyListener() {
@@ -81,21 +76,14 @@ public class KeyBindings {
                     menu.toggleFullscreen(); 
                     break; 
                 
-
-                
-            
                 default:
                     break;
             }
-            System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
-
-
-            
+            System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());            
         }
         
         @Override
         public void keyReleased(KeyEvent e) {
         }
-        
     };
 }
