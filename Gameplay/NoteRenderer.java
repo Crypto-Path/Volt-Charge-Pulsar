@@ -27,6 +27,10 @@ public class NoteRenderer extends JButton {
     public JFrame frame;
     private int[][][] notes;
     private static float songPosition = 0;
+    private boolean active1 = false;
+    private boolean active2 = false;
+    private boolean active3 = false;
+    private boolean active4 = false;
 
     public NoteRenderer(JFrame frame, int[][][] notes) {
         setContentAreaFilled(false);
@@ -53,14 +57,18 @@ public class NoteRenderer extends JButton {
             }
         }
 
-        Color hitters = new Color(255, 0, 0, 127);
-        g2.setColor(hitters);
+        Color inactive = new Color(255, 0, 0, 127);
+        Color active = new Color(255, 0, 0, 127);
 
         int size = Math.min(frame.getHeight(), frame.getWidth()) / 15;
-        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 - size - 20, size, size, size / 3, size / 3);
-        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 - size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3);
-        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 + size - 20, size, size, size / 3, size / 3);
-        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 + size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3);
+        g2.setColor((active1) ? active : inactive);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 - size - 20, size, size, size / 3, size / 3); // Up
+        g2.setColor((active2) ? active : inactive);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 - size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3); // Left
+        g2.setColor((active3) ? active : inactive);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2, frame.getHeight() / 2 - size / 2 + size - 20, size, size, size / 3, size / 3); // Down
+        g2.setColor((active4) ? active : inactive);
+        g2.fillRoundRect(frame.getWidth() / 2 - size / 2 + size, frame.getHeight() / 2 - size / 2 - 20, size, size, size / 3, size / 3); // Right
 
         super.paintComponent(g);
     }
@@ -130,6 +138,26 @@ public class NoteRenderer extends JButton {
 
     public static void setSongPosition(float songPosition) {
       NoteRenderer.songPosition = songPosition;
+    }
+
+    public void setActive(int direction, boolean active) {
+        switch (direction) {
+            case 0:
+                active1 = active;
+                break;
+            case 1:
+                active2 = active;
+                break;
+            case 2:
+                active3 = active;
+                break;
+            case 3:
+                active4 = active;
+                break;
+        
+            default:
+                break;
+        }
     }
 
     public static void main(String[] args) {
