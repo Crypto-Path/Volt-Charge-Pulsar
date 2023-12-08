@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,10 +19,8 @@ import java.awt.Graphics2D;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import
 
-javax.sound.sampled.LineUnavailableException;
-
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import java.io.File;
@@ -33,9 +32,9 @@ public class AudioPlayer extends JButton {
 
   private boolean isShown;
 
-  private Components.Button playButton;
+  public Components.Button playButton;
 
-  private JFrame frame;
+  private static JFrame frame;
 
   private int x;
   private int y;
@@ -89,26 +88,26 @@ public class AudioPlayer extends JButton {
     // clip.setLoopPoints(PreviewPoint, -1);
   }
 
-  Timer timer = new Timer(33, new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      repaint();
-      if (clip.getMicrosecondPosition() == clip.getMicrosecondLength()) {
-        stop();
-      }
-    }
-  });
+  // Timer timer = new Timer(33, new ActionListener() {
+  //   @Override
+  //   public void actionPerformed(ActionEvent e) {
+  //     repaint();
+  //     if (clip.getMicrosecondPosition() == clip.getMicrosecondLength()) {
+  //       stop();
+  //     }
+  //   }
+  // });
 
   public void play() {
     System.out.println("Audio: Playing audio");
     clip.start();
-    timer.start();
+    // timer.start();
   }
 
   public void pause() {
     System.out.println("Audio: Pausing audio");
     clip.stop();
-    timer.stop();
+    // timer.stop();
   }
 
   public void stop() {
@@ -116,7 +115,7 @@ public class AudioPlayer extends JButton {
     if (clip != null) {
       clip.stop();
       clip.close();
-      timer.stop();
+      // timer.stop();
     }
   }
 
@@ -151,7 +150,12 @@ public class AudioPlayer extends JButton {
       Graphics2D g2 = (Graphics2D) g;
       g2.setColor(new Color(127, 127, 127));
       g2.fillRoundRect(0, 0, getWidth(), getHeight(), this.h, this.h);
+      
+      // Play button
+      playButton.setLocation(x + 10, y + 10);
+      playButton.setSize(this.h - 20, this.h - 20);
 
+      // Progress bar
       int barHeight = 8;
       g2.setColor(new Color(100, 100, 120));
       g2.fillRoundRect(this.h, this.h / 2 - barHeight / 2, (int) (w - 2 * this.h), barHeight, barHeight, barHeight);
@@ -161,13 +165,40 @@ public class AudioPlayer extends JButton {
           (int) (clip.getMicrosecondPosition() * 1.0 / clip.getMicrosecondLength() * (w - 2 * this.h)), barHeight,
           barHeight, barHeight);
 
+      // Progress timer
       g2.drawString(timeText, this.w - this.h / 2 - metrics.stringWidth(timeText) / 2,
           this.h / 2 + metrics.getHeight() / 4);
 
-      System.out.println(clip.getMicrosecondPosition() * 1.0 / clip.getMicrosecondLength());
+      // System.out.println(clip.getMicrosecondPosition() * 1.0 / clip.getMicrosecondLength());
 
       super.paintComponent(g);
     }
+  }
+
+  @Override
+  public int getX() {
+    return this.x;
+  }
+
+  @Override
+  public int getY() {
+    return this.y;
+  }
+
+  public int getW() {
+    return this.w;
+  }
+
+  public int getH() {
+    return this.h;
+  }
+
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  public void setY(int y) {
+    this.y = y;
   }
 
   public static void main(String[] args) {
@@ -199,6 +230,17 @@ public class AudioPlayer extends JButton {
         frame.add(audioPlayer);
         frame.setLayout(null);
         audioPlayer.setBounds(audioPlayer.x, audioPlayer.y, audioPlayer.w, audioPlayer.h);
+        
+        Timer timer = new Timer(33, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          frame.repaint();
+          audioPlayer.setX(frame.getWidth() - (audioPlayer.getW() + 20));
+          audioPlayer.setY(frame.getHeight() - (audioPlayer.getH() + 45));
+          }
+        });
+        timer.start();
+
       }
     });
   }
