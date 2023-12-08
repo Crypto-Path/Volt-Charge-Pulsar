@@ -30,7 +30,7 @@ public class SceneManager {
 
   public void LoadGame() {
     // Load game
-    game = new Game(frame);
+    game = new Game(frame, 0, 0);
     game.InitMenu();
     game.initGUI();
   }

@@ -103,8 +103,10 @@ public class Menu {
             device.setFullScreenWindow(null);
             frame.dispose();
             frame.setUndecorated(false);
-            initMenu(); // Reinitialize the frame
+            initMenu(); // Reinitialize the frame 
         }
+
+            
     }
 
     Timer timer;

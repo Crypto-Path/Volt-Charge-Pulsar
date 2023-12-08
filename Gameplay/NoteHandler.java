@@ -6,16 +6,20 @@ public class NoteHandler {
     new Judgment("Bad", 18, 1),
     new Judgment("Miss", 27, 0)
   };
+
+  
   private int score = 0;
   private float accuracy = 1;
   private int combo = 0;
   private int maxCombo = 0;
 
   /**
-     *
+     * 
    * @param ms absolute distance in time from being directly on beat with the note
    * @return boolean Whether the note was hit or not
+   * 
    */
+
   public boolean judgeNote(float ms) {
 
     // If you hit too early
@@ -56,6 +60,8 @@ public class NoteHandler {
     // Get the range the note was hit in
     for (Judgment judgment : judgments) {
       score += judgment.getCount() * judgment.getValue();
+      
+
     }
 
     return score * maxCombo;

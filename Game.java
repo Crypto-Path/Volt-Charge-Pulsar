@@ -37,7 +37,7 @@ public class Game {
     System.out.println("Initiating Audio Player");
     audioPlayer = new AudioPlayer(frame, 300, 50, true);
     try {
-      audioPlayer.setAudio("audio.wav");
+      audioPlayer.setAudio("Maps/1/audio.wav");
     } catch (IOException e) {
       System.out.println("Error - AudioPlayer.java: General error. lol code bad.");
       e.printStackTrace();

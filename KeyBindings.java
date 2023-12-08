@@ -74,10 +74,13 @@ public class KeyBindings {
                     break; 
                case KeyEvent.VK_RIGHT:
                     menu.toggleFullscreen(); 
+                    break;
+               case KeyEvent.VK_SPACE: 
+                    menu.toggleFullscreen();
+                    break; 
+                default:
                     break; 
                 
-                default:
-                    break;
             }
             System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());            
         }
