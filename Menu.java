@@ -10,9 +10,13 @@ import java.awt.event.KeyListener;
 
 public class Menu {
   private JFrame frame;
+  private SceneManager manager;
 
-  public Menu(JFrame frame) {
+  private Button menuButtons[];
+
+  public Menu(JFrame frame, SceneManager manager) {
     this.frame = frame;
+    this.manager = manager;
   }
 
   public void initMenu() {
@@ -30,13 +34,15 @@ public class Menu {
     }
 
     public void initGUI() {
-        Button menuButtons[] = {
+        Button tempButtons[] = {
             createButton(frame, "Solo", frame.getWidth(), 5, 150, 30),
             createButton(frame, "Multi", frame.getWidth(), 4, 150, 30),
             createButton(frame, "Editor", frame.getWidth(), 3, 150, 30),
             createButton(frame, "Settings", frame.getWidth(), 2, 150, 30),
             createButton(frame, "Exit", frame.getWidth(), 1, 150, 30)
         };
+
+        this.menuButtons = tempButtons;
 
         for (Button button : menuButtons) {
             button.setLocation(button.location().x, frame.getHeight() - (button.location().y * 50 + 50));
@@ -46,6 +52,8 @@ public class Menu {
         menuButtons[0].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 System.out.println("Solo");
+                manager.LoadGame();
+                manager.UnloadMenu();
             }
         });
 
@@ -70,6 +78,16 @@ public class Menu {
         button.setSize(w, h);
         button.setRadius(h);
         return button;
+    }
+
+    public void unload() {
+        timer.stop();
+        timer = null;
+        for (Button button : menuButtons) {
+            frame.remove(button);
+            button = null;
+        }
+        frame.getContentPane().setBackground(Color.WHITE);
     }
 
     public void toggleFullscreen() {
