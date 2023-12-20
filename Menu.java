@@ -11,6 +11,7 @@ public class Menu {
   private SceneManager manager;
 
   private Button menuButtons[];
+  private SettingPanel settingPanel;
 
   public Menu(JFrame frame, SceneManager manager) {
     this.frame = frame;
@@ -67,6 +68,8 @@ public class Menu {
         });
 
         animateButtons(frame, menuButtons);
+
+        settingPanel = new SettingPanel(frame);
     }
 
     private Button createButton(JFrame frame, String text, int x, int y, int w, int h) {
@@ -102,9 +105,11 @@ public class Menu {
             frame.dispose();
             frame.setUndecorated(false);
             initMenu(); // Reinitialize the frame 
-        }
+        }            
+    }
 
-            
+    public void toggleSettings() {
+
     }
 
     Timer timer;

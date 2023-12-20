@@ -31,6 +31,9 @@ public class KeyBindings {
                 case KeyEvent.VK_F11:
                     menu.toggleFullscreen();
                     break;
+                case KeyEvent.VK_O:
+                    menu.toggleSettings();
+                    break;
             
                 default:
                     break;

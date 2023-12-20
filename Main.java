@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.util.*;
 
 public class Main {
     static JFrame frame = new JFrame("Volt Charge Pulsar");
